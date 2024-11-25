@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,10 +18,11 @@ import {
     Loader2
 } from 'lucide-react';
 
+import Balance from '@/components/balance/Balance';
+
 export default function HomePage() {
     const { toast } = useToast();
     const [loading, setLoading] = useState(false);
-    const [balance, setBalance] = useState(0);
     const [formData, setFormData] = useState({
         date: new Date().toISOString().split('T')[0],
         type: '',
@@ -45,25 +46,6 @@ export default function HomePage() {
         { value: 'otros', label: 'Otros' }
     ];
 
-    useEffect(() => {
-        fetchBalance();
-    }, []);
-
-    const fetchBalance = async () => {
-        try {
-            const response = await fetch('/api/balance');
-            const data = await response.json();
-            if (data.balance !== undefined) {
-                setBalance(data.balance);
-            }
-        } catch (error) {
-            toast({
-                variant: "destructive",
-                title: "Error",
-                description: "No se pudo cargar el balance"
-            });
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -110,18 +92,8 @@ export default function HomePage() {
 
     return (
         <div className="min-h-screen bg-gray-50 p-4">
-            {/* Balance Card */}
-            <Card className="mb-6">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Balance Total</CardTitle>
-                    <Wallet className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                    <div className="text-2xl font-bold">
-                        ${balance.toFixed(2)}
-                    </div>
-                </CardContent>
-            </Card>
+
+            <Balance />
 
             {/* Form Card */}
             <Card className="mb-6">
