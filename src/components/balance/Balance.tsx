@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
@@ -17,21 +17,22 @@ export default function Balance() {
     const [balance, setBalance] = useState<number | null>(null);
     const [balanceError, setBalanceError] = useState<string | null>(null);
 
-    const fetchBalance = async () => {
+    // Memorizar fetchBalance para evitar recrearlo en cada render
+    const fetchBalance = useCallback(async () => {
         try {
             setLoading(true);
             console.log("Fetching balance...");
-            
+
             const response = await fetch("/api/balance");
             console.log("Balance API Response:", response);
-            
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-            
+
             const data = (await response.json()) as BalanceData;
             console.log("Balance data received:", data);
-            
+
             if (data.balance !== undefined) {
                 setBalance(data.balance);
                 setBalanceError(null);
@@ -50,11 +51,11 @@ export default function Balance() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [toast]);
 
     useEffect(() => {
         fetchBalance();
-    }, []);
+    }, [fetchBalance]);
 
     return (
         <Card className="mb-6">

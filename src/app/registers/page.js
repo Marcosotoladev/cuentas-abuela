@@ -29,8 +29,6 @@ import {
     Trash2,
     Filter,
     Loader2,
-    ArrowUpRight,
-    ArrowDownRight
 } from 'lucide-react';
 
 export default function MovementsPage() {
@@ -50,7 +48,7 @@ export default function MovementsPage() {
 
     useEffect(() => {
         fetchMovements(1, true);
-    }, [filters]);
+    }, [fetchMovements]);
 
     const fetchMovements = async (pageNum, reset = false) => {
         setLoading(true);
@@ -70,7 +68,7 @@ export default function MovementsPage() {
             setLastVisible(data.lastVisible);
             setHasMore(data.hasMore);
             setPage(pageNum);
-        } catch (error) {
+        } catch {
             toast({
                 variant: "destructive",
                 title: "Error",

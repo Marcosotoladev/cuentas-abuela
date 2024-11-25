@@ -63,7 +63,6 @@ export default function HomePage() {
             const result = await response.json();
 
             if (result.success) {
-                setBalance(result.newBalance);
                 setFormData({
                     date: new Date().toISOString().split('T')[0],
                     type: '',
@@ -79,7 +78,7 @@ export default function HomePage() {
             } else {
                 throw new Error(result.error);
             }
-        } catch (error) {
+        } catch {
             toast({
                 variant: "destructive",
                 title: "Error",
