@@ -47,9 +47,6 @@ export default function MovementsPage() {
         category: "",
     });
 
-    useEffect(() => {
-        fetchMovements(1, true);
-    }, []);
 
     const fetchMovements = async (pageNum, reset = false) => {
         setLoading(true);
@@ -79,6 +76,10 @@ export default function MovementsPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchMovements(1, true);
+    }, []);
 
     const handleDelete = async () => {
         try {
