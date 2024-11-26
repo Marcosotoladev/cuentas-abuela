@@ -1,19 +1,25 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableHeader,
-    TableRow
+    TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast"
+import { useToast } from "@/hooks/use-toast";
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,12 +30,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-    Pencil,
-    Trash2,
-    Filter,
-    Loader2,
-} from 'lucide-react';
+import { Pencil, Trash2, Filter, Loader2 } from "lucide-react";
 
 export default function MovementsPage() {
     const { toast } = useToast();
@@ -40,15 +41,15 @@ export default function MovementsPage() {
     const [page, setPage] = useState(1);
     const [deleteId, setDeleteId] = useState(null);
     const [filters, setFilters] = useState({
-        dateFrom: '',
-        dateTo: '',
-        type: '',
-        category: ''
+        dateFrom: "",
+        dateTo: "",
+        type: "",
+        category: "",
     });
 
     useEffect(() => {
         fetchMovements(1, true);
-    }, [fetchMovements]);
+    }, []);
 
     const fetchMovements = async (pageNum, reset = false) => {
         setLoading(true);
@@ -56,7 +57,7 @@ export default function MovementsPage() {
             const queryParams = new URLSearchParams({
                 page: pageNum.toString(),
                 ...filters,
-                lastVisible: reset ? '' : lastVisible
+                lastVisible: reset ? "" : lastVisible,
             });
 
             const response = await fetch(`/api/movements?${queryParams}`);
@@ -64,7 +65,7 @@ export default function MovementsPage() {
 
             if (data.error) throw new Error(data.error);
 
-            setMovements(prev => reset ? data.movements : [...prev, ...data.movements]);
+            setMovements((prev) => (reset ? data.movements : [...prev, ...data.movements]));
             setLastVisible(data.lastVisible);
             setHasMore(data.hasMore);
             setPage(pageNum);
@@ -72,7 +73,7 @@ export default function MovementsPage() {
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: "No se pudieron cargar los movimientos"
+                description: "No se pudieron cargar los movimientos",
             });
         } finally {
             setLoading(false);
@@ -81,56 +82,47 @@ export default function MovementsPage() {
 
     const handleDelete = async () => {
         try {
-            console.log('Deleting movement with ID:', deleteId); // Log para depuración
-
             const response = await fetch(`/api/movements/${deleteId}`, {
-                method: 'DELETE',
+                method: "DELETE",
                 headers: {
-                    'Content-Type': 'application/json'
-                }
+                    "Content-Type": "application/json",
+                },
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
-                console.error('Server response:', data); // Log para depuración
-                throw new Error(data.error || 'Error al eliminar el movimiento');
-            }
+            if (!response.ok) throw new Error(data.error || "Error al eliminar el movimiento");
 
-            setMovements(prev => prev.filter(m => m.id !== deleteId));
+            setMovements((prev) => prev.filter((m) => m.id !== deleteId));
             setDeleteId(null);
 
             toast({
                 title: "Éxito",
-                description: "El movimiento se eliminó correctamente"
+                description: "El movimiento se eliminó correctamente",
             });
         } catch (error) {
-            console.error('Error deleting movement:', error);
-
             toast({
                 variant: "destructive",
                 title: "Error",
-                description: error.message || "No se pudo eliminar el movimiento"
+                description: error.message || "No se pudo eliminar el movimiento",
             });
         }
     };
 
-
-
     const categories = {
         ingreso: [
-            { value: 'sueldo', label: 'Sueldo' },
-            { value: 'ofrenda', label: 'Ofrenda' },
-            { value: 'alquiler', label: 'Alquiler' }
+            { value: "sueldo", label: "Sueldo" },
+            { value: "ofrenda", label: "Ofrenda" },
+            { value: "alquiler", label: "Alquiler" },
         ],
         egreso: [
-            { value: 'salud', label: 'Salud' },
-            { value: 'supermercado', label: 'Supermercado' },
-            { value: 'impuestos', label: 'Impuestos y Servicios' },
-            { value: 'mantenimiento', label: 'Mantenimiento' },
-            { value: 'traslado', label: 'Traslado' },
-            { value: 'otros', label: 'Otros' }
-        ]
+            { value: "salud", label: "Salud" },
+            { value: "supermercado", label: "Supermercado" },
+            { value: "impuestos", label: "Impuestos y Servicios" },
+            { value: "mantenimiento", label: "Mantenimiento" },
+            { value: "traslado", label: "Traslado" },
+            { value: "otros", label: "Otros" },
+        ],
     };
 
     return (
@@ -160,7 +152,7 @@ export default function MovementsPage() {
                         </div>
                         <Select
                             value={filters.type || undefined}
-                            onValueChange={(value) => setFilters({ ...filters, type: value, category: '' })}
+                            onValueChange={(value) => setFilters({ ...filters, type: value, category: "" })}
                         >
                             <SelectTrigger>
                                 <SelectValue placeholder="Tipo" />
@@ -181,11 +173,12 @@ export default function MovementsPage() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Todas</SelectItem>
-                                {filters.type && categories[filters.type]?.map(cat => (
-                                    <SelectItem key={cat.value} value={cat.value}>
-                                        {cat.label}
-                                    </SelectItem>
-                                ))}
+                                {filters.type &&
+                                    categories[filters.type]?.map((cat) => (
+                                        <SelectItem key={cat.value} value={cat.value}>
+                                            {cat.label}
+                                        </SelectItem>
+                                    ))}
                             </SelectContent>
                         </Select>
                     </div>
@@ -206,14 +199,14 @@ export default function MovementsPage() {
                             {movements.map((movement) => (
                                 <TableRow key={movement.id}>
                                     <TableCell>{new Date(movement.date).toLocaleDateString()}</TableCell>
-                                    <TableCell>{movement.type === 'ingreso' ? 'Ingreso' : 'Egreso'}</TableCell>
+                                    <TableCell>{movement.type === "ingreso" ? "Ingreso" : "Egreso"}</TableCell>
                                     <TableCell>{movement.amount}</TableCell>
                                     <TableCell>{movement.category}</TableCell>
                                     <TableCell>{movement.observations}</TableCell>
                                     <TableCell>
                                         <Button
                                             variant="link"
-                                            onClick={() => console.log('Edit', movement.id)}
+                                            onClick={() => console.log("Edit", movement.id)}
                                         >
                                             <Pencil className="h-5 w-5" />
                                         </Button>
@@ -237,24 +230,31 @@ export default function MovementsPage() {
                 </CardContent>
             </Card>
 
-            <AlertDialog open={deleteId !== null} onOpenChange={(open) => open || setDeleteId(null)}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Eliminar Movimiento</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            ¿Estás seguro de que deseas eliminar este movimiento? Esta acción no se puede deshacer.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel onClick={() => setDeleteId(null)}>
-                            Cancelar
-                        </AlertDialogCancel>
-                        <AlertDialogAction onClick={handleDelete}>
-                            Eliminar
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            {deleteId !== null && (
+                <AlertDialog
+                    open={true}
+                    onOpenChange={(open) => {
+                        if (!open) setDeleteId(null);
+                    }}
+                >
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Eliminar Movimiento</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                ¿Estás seguro de que deseas eliminar este movimiento? Esta acción no se
+                                puede deshacer.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setDeleteId(null)}>
+                                Cancelar
+                            </AlertDialogCancel>
+                            <AlertDialogAction onClick={handleDelete}>Eliminar</AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </div>
     );
 }
+
