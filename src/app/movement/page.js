@@ -149,7 +149,7 @@ export default function HomePage() {
                                 </Label>
                                 <Input
                                     id="amount"
-                                    type="number"
+                                    type="number"	
                                     step="0.01"
                                     placeholder="0.00"
                                     value={formData.amount}

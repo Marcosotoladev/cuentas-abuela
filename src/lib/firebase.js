@@ -184,8 +184,6 @@ export async function getDateRangeSummary(dateFrom, dateTo) {
 
 // Función para eliminar un movimiento
 
-// En lib/firebase.js
-
 export async function deleteMovement(id) {
     try {
         console.log('Starting deletion process for movement:', id); // Log para depuración
